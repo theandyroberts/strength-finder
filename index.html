@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>EASCI Strength Assessment</title>
 	<style>
-		html, body {
+		html,
+		body {
 			padding: 40;
 			margin: 0;
 			box-sizing: border-box;
-			font-family: Helvetica, Calibri, Roboto, Open Sans, sans-serif; 
+			font-family: Helvetica, Calibri, Roboto, Open Sans, sans-serif;
 			-webkit-backface-visibility: hidden;
 		}
+
 		* {
 			box-sizing: inherit;
 		}
+
 		h1 {
 			text-align: center;
 		}
+
 		svg {
-			margin:auto;
-			display:block;
+			margin: auto;
+			display: block;
 		}
 
-    .label {
-    	fill: #fff;
-    }
+		.label {
+			fill: #fff;
+		}
 
 		.circle-overlay {
 			font-size: 16px;
 			position: absolute;
 			overflow: hidden;
 			/*it's buggy with the foreignObject background right now*/
-			background: rgba(255,255,255,0.4);
+			background: rgba(255, 255, 255, 0.4);
 			border-radius: 150px;
 		}
+
 		.circle-overlay__inner {
 			text-align: center;
 			width: 100%;
@@ -46,124 +52,265 @@
 		.hidden {
 			display: none;
 		}
+
 		.node-icon {
 			font-size: 1.2rem;
 		}
+
 		.node-icon--faded {
 			opacity: 0.02;
 		}
+
 		.legend-size circle {
 			fill: rgb(31, 119, 180);
 		}
 
-    body, html {
-      height: 100%;
-      background-color: rgb(17, 37, 72);
-    }
+		body,
+		html {
+			height: 100%;
+			background-color: rgb(17, 37, 72);
+		}
 
-    svg {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 100vh;
-    }
+		svg {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			height: 100vh;
+		}
 	</style>
 </head>
+
 <body>
-	<svg width="100%" height="900" id='strengthChart' font-family="sans-serif" font-size="12" text-anchor="middle"></svg>
+	<svg width="100%" height="900" id='strengthChart' font-family="sans-serif" font-size="12"
+		text-anchor="middle"></svg>
 
 	<script src="js/d3.min.js"></script>
 	<script src="js/d3-legend.min.js"></script>
 	<script>
+		window.addEventListener('resize', function () {
+			document.getElementById('strengthChart').setAttribute('height', window.innerHeight * .8);
+		});
 
-    window.addEventListener('resize', function() {
-      document.getElementById('strengthChart').setAttribute('height', window.innerHeight * .8);
-    });
-
-    document.getElementById('strengthChart').setAttribute('height', window.innerHeight * .8);
+		document.getElementById('strengthChart').setAttribute('height', window.innerHeight * .8);
 
 		// Based loosely from this D3 bubble graph https://bl.ocks.org/mbostock/4063269
 		// And this Forced directed diagram https://bl.ocks.org/mbostock/4062045
 		let data = [{
-			cat: 'strategic', name: 'Andy', value: 60,
-			strategic: 60, execution: 50, influence: 10, relationship: 30,
+			cat: 'strategic',
+			name: 'Andy',
+			value: 60,
+			strategic: 60,
+			execution: 50,
+			influence: 10,
+			relationship: 30,
 			icon: 'img/AR.JPG'
 		}, {
-			cat: 'strategic', name: 'Adrian', value: 120,
-			strategic: 120, execution: 30, influence: 0, relationship: 0,
+			cat: 'strategic',
+			name: 'Adrian',
+			value: 120,
+			strategic: 120,
+			execution: 30,
+			influence: 0,
+			relationship: 0,
 			icon: 'img/AL.JPG'
 		}, {
-			cat: 'relationship', name: 'AJ', value: 60,
-			strategic: 30, execution: 10, influence: 50, relationship: 60,
+			cat: 'relationship',
+			name: 'AJ',
+			value: 60,
+			strategic: 30,
+			execution: 10,
+			influence: 50,
+			relationship: 60,
 			icon: 'img/AJ.JPG'
 		}, {
-			cat: 'relationship', name: 'Alex', value: 70,
-			strategic: 40, execution: 10, influence: 30, relationship: 70,
+			cat: 'relationship',
+			name: 'Alex',
+			value: 70,
+			strategic: 40,
+			execution: 10,
+			influence: 30,
+			relationship: 70,
 			icon: 'img/AT.JPG'
 		}, {
-			cat: 'strategic', name: 'Alvin', value: 80,
-			strategic: 80, execution: 50, influence: 0, relationship: 20,
+			cat: 'strategic',
+			name: 'Alvin',
+			value: 80,
+			strategic: 80,
+			execution: 50,
+			influence: 0,
+			relationship: 20,
 			icon: 'img/Alvin.jpg'
 		}, {
-			cat: 'strategic', name: 'Aron', value: 70,
-			strategic: 70, execution: 60, influence: 0, relationship: 20,
+			cat: 'strategic',
+			name: 'Aron',
+			value: 70,
+			strategic: 70,
+			execution: 60,
+			influence: 0,
+			relationship: 20,
 			icon: 'img/AP.JPG'
 		}, {
-			cat: 'strategic', name: 'Kan', value: 90,
-			strategic: 90, execution: 30, influence: 0, relationship: 30,
+			cat: 'strategic',
+			name: 'Kan',
+			value: 90,
+			strategic: 90,
+			execution: 30,
+			influence: 0,
+			relationship: 30,
 			icon: 'img/Kan.jpg'
 		}, {
-			cat: 'strategic', name: 'Jeston', value: 100,
-			strategic: 100, execution: 0, influence: 0, relationship: 50,
+			cat: 'strategic',
+			name: 'Jeston',
+			value: 100,
+			strategic: 100,
+			execution: 0,
+			influence: 0,
+			relationship: 50,
 			icon: 'img/JEST.JPG'
 		}, {
-			cat: 'relationship', name: 'Jacob', value: 100,
-			strategic: 50, execution: 0, influence: 0, relationship: 100,
+			cat: 'relationship',
+			name: 'Jacob',
+			value: 100,
+			strategic: 50,
+			execution: 0,
+			influence: 0,
+			relationship: 100,
 			icon: 'img/JAL.JPG'
 		}, {
-			cat: 'execution', name: 'Jim', value: 80,
-			strategic: 0, execution: 80, influence: 40, relationship: 30,
+			cat: 'execution',
+			name: 'Jim',
+			value: 80,
+			strategic: 0,
+			execution: 80,
+			influence: 40,
+			relationship: 30,
 			icon: 'img/Jim.jpg'
 		}, {
-			cat: 'influence', name: 'Justin', value: 90,
-			strategic: 0, execution: 0, influence: 90, relationship: 60,
+			cat: 'influence',
+			name: 'Justin',
+			value: 90,
+			strategic: 0,
+			execution: 0,
+			influence: 90,
+			relationship: 60,
 			icon: 'img/JB-2.JPG'
 		}, {
-			cat: 'relationship', name: 'Edwin', value: 100,
-			strategic: 0, execution: 50, influence: 0, relationship: 100,
+			cat: 'relationship',
+			name: 'Edwin',
+			value: 100,
+			strategic: 0,
+			execution: 50,
+			influence: 0,
+			relationship: 100,
 			icon: 'img/ES-2.JPG'
 		}, {
-			cat: 'execution', name: 'Jainen', value: 90,
-			strategic: 40, execution: 90, influence: 0, relationship: 20,
+			cat: 'execution',
+			name: 'Jainen',
+			value: 90,
+			strategic: 40,
+			execution: 90,
+			influence: 0,
+			relationship: 20,
 			icon: 'img/JN-2.JPG'
 		}, {
-			cat: 'strategic', name: 'James', value: 90,
-			strategic: 90, execution: 10, influence: 50, relationship: 0,
+			cat: 'strategic',
+			name: 'James',
+			value: 90,
+			strategic: 90,
+			execution: 10,
+			influence: 50,
+			relationship: 0,
 			icon: 'img/JS.JPG'
 		}, {
-			cat: 'strategic', name: 'John', value: 110,
-			strategic: 110, execution: 30, influence: 10, relationship: 0,
+			cat: 'strategic',
+			name: 'Charlotte',
+			value: 90,
+			strategic: 90,
+			execution: 50,
+			influence: 10,
+			relationship: 0,
+			icon: 'img/Charlotte.jpg'
+		}, {
+			cat: 'strategic',
+			name: 'John',
+			value: 110,
+			strategic: 110,
+			execution: 30,
+			influence: 10,
+			relationship: 0,
 			icon: 'img/JG.JPG'
 		}, {
-			cat: 'influence', name: 'Jens', value: 60,
-			strategic: 30, execution: 10, influence: 60, relationship: 50,
+			cat: 'influence',
+			name: 'Jens',
+			value: 60,
+			strategic: 30,
+			execution: 10,
+			influence: 60,
+			relationship: 50,
 			icon: 'img/JT.JPG'
 		}, {
-			cat: 'strategic', name: 'Miller', value: 110,
-			strategic: 110, execution: 0, influence: 0, relationship: 40,
+			cat: 'strategic',
+			name: 'Miller',
+			value: 110,
+			strategic: 110,
+			execution: 0,
+			influence: 0,
+			relationship: 40,
 			icon: 'img/JM.JPG'
 		}, {
-			cat: 'execution', name: 'Madeleine', value: 70,
-			strategic: 70, execution: 70, influence: 10, relationship: 0,
+			cat: 'execution',
+			name: 'Madeleine',
+			value: 70,
+			strategic: 70,
+			execution: 70,
+			influence: 10,
+			relationship: 0,
 			icon: 'img/MMAY.JPG'
 		}, {
-			cat: 'execution', name: 'Talia', value: 90,
-			strategic: 40, execution: 90, influence: 0, relationship: 20,
+			cat: 'execution',
+			name: 'Talia',
+			value: 90,
+			strategic: 40,
+			execution: 90,
+			influence: 0,
+			relationship: 20,
 			icon: 'img/TR.JPG'
 		}, {
-			cat: 'relationship', name: 'Ana', value: 120,
-			strategic: 0, execution: 30, influence: 0, relationship: 120,
+			cat: 'relationship',
+			name: 'Ana',
+			value: 120,
+			strategic: 0,
+			execution: 30,
+			influence: 0,
+			relationship: 120,
 			icon: 'img/ARP.JPG'
+		}, {
+			cat: 'strategic',
+			name: 'Carly',
+			value: 100,
+			strategic: 100,
+			execution: 0,
+			influence: 0,
+			relationship: 50,
+			icon: 'img/Carly.jpg'
+		}, {
+			cat: 'influence',
+			name: 'Tyler',
+			value: 70,
+			strategic: 50,
+			execution: 30,
+			influence: 70,
+			relationship: 0,
+			icon: 'img/Tyler.jpg'
+		}, {
+			cat: 'relationship',
+			name: 'Randy',
+			value: 110,
+			strategic: 0,
+			execution: 0,
+			influence: 40,
+			relationship: 110,
+			icon: 'img/Randy.jpg'
 		}];
 
 		/*
@@ -196,20 +343,20 @@
 			.attr("width", "100%")
 			.attr("patternContentUnits", "objectBoundingBox")
 			.append("image")
-				.attr("height", 1)
-				.attr("width", 1)
-				.attr("preserveAspectRatio", "none")
-				.attr("xmlns:xlink","http://www.w3.org/1999/xlink")
-				.attr("xlink:href","img/jon-snow.png");
+			.attr("height", 1)
+			.attr("width", 1)
+			.attr("preserveAspectRatio", "none")
+			.attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+			.attr("xlink:href", "img/jon-snow.png");
 
-//		let scaleColor = d3.scaleOrdinal(d3.schemeCategory20);
+		//		let scaleColor = d3.scaleOrdinal(d3.schemeCategory20);
 		let scaleColor = d3.scaleOrdinal()
-  		.domain(["strategic", "execution", "influence","relationship"])
-  		.range(["#A7d31E", "#80D1E4" , "#93004A","#DE1C31"]);
+			.domain(["strategic", "execution", "influence", "relationship"])
+			.range(["#A7d31E", "#80D1E4", "#93004A", "#DE1C31"]);
 
 		// use pack to calculate radius of the circle
 		let pack = d3.pack()
-			.size([width , height ])
+			.size([width, height])
 			.padding(1.5);
 
 		let forceCollide = d3.forceCollide(d => d.r + 1);
@@ -220,8 +367,8 @@
 			.force('charge', d3.forceManyBody())
 			.force('collide', forceCollide)
 			// .force('center', d3.forceCenter(centerX, centerY))
-			.force('x', d3.forceX(centerX ).strength(strength))
-			.force('y', d3.forceY(centerY ).strength(strength));
+			.force('x', d3.forceX(centerX).strength(strength))
+			.force('y', d3.forceY(centerY).strength(strength));
 
 		// reduce number of circles on mobile screen due to slow computation
 		if ('matchMedia' in window && window.matchMedia('(max-device-width: 767px)').matches) {
@@ -230,13 +377,15 @@
 			});
 		}
 
-		let root = d3.hierarchy({ children: data })
+		let root = d3.hierarchy({
+				children: data
+			})
 			.sum(d => d.value);
 
 		// we use pack() to automatically calculate radius conveniently only
 		// and get only the leaves
 		let nodes = pack(root).leaves().map(node => {
-	//	console.log('node:', node.x, (node.x - centerX) * 2);
+			//	console.log('node:', node.x, (node.x - centerX) * 2);
 			const data = node.data;
 			return {
 				x: centerX + (node.x - centerX) * 3, // magnify start position to have transition to center movement
@@ -258,21 +407,21 @@
 		defs.selectAll('.node')
 			.data(nodes)
 			.enter().append("pattern")
-				.attr("class", "headshot-pattern")
-				.attr("id", function(d) {
-					return d.name.toLowerCase().replace(/ /g, "-")
-				})
-				.attr("height", "100%")
-				.attr("width", "100%")
-				.attr("patternContentUnits", "objectBoundingBox")
-				.append("image")
-					.attr("height", 1)
-					.attr("width", 1)
-					.attr("preserveAspectRatio", "xMidYMid slice")
-					.attr("xmlns:xlink","http://www.w3.org/1999/xlink")
-					.attr("xlink:href", function(d) {
-						return d.icon
-					});
+			.attr("class", "headshot-pattern")
+			.attr("id", function (d) {
+				return d.name.toLowerCase().replace(/ /g, "-")
+			})
+			.attr("height", "100%")
+			.attr("width", "100%")
+			.attr("patternContentUnits", "objectBoundingBox")
+			.append("image")
+			.attr("height", 1)
+			.attr("width", 1)
+			.attr("preserveAspectRatio", "xMidYMid slice")
+			.attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+			.attr("xlink:href", function (d) {
+				return d.icon
+			});
 
 		simulation.nodes(nodes).on('tick', ticked);
 
@@ -304,13 +453,13 @@
 			.style('stroke-width', 3)
 			.style('fill', d => "url(#" + d.name.toLowerCase().replace(/ /g, "-") + ")")
 			.transition().duration(2000).ease(d3.easeElasticOut)
-				.tween('circleIn', (d) => {
-					let i = d3.interpolateNumber(0, d.radius);
-					return (t) => {
-						d.r = i(t);
-						simulation.force('collide', forceCollide);
-					}
-				})
+			.tween('circleIn', (d) => {
+				let i = d3.interpolateNumber(0, d.radius);
+				return (t) => {
+					d.r = i(t);
+					simulation.force('collide', forceCollide);
+				}
+			})
 
 		node.append('clipPath')
 			.attr('id', d => `clip-${d.id}`)
@@ -325,10 +474,10 @@
 			.selectAll('tspan')
 			.data(d => d.icon.split(';'))
 			.enter()
-				.append('tspan')
-				.attr('x', 0)
-				.attr('y', (d, i, nodes) => (13 + (i - nodes.length / 2 - 0.5) * 10))
-				.text(name => name);
+			.append('tspan')
+			.attr('x', 0)
+			.attr('y', (d, i, nodes) => (13 + (i - nodes.length / 2 - 0.5) * 10))
+			.text(name => name);
 
 		// display image as circle icon
 		/* node.filter(d => String(d.icon).includes('img/'))
@@ -345,10 +494,10 @@
 
 		node.append('title')
 			.text(d => (d.name + ' - ' + d.cat + '\n' +
-				'Strategic: ' + d.strategic + '\n'
-				+ 'Execution: ' + d.execution + '\n'
-				+ 'Influence: ' + d.influence + '\n'
-				+ 'Relationship: ' + d.relationship ));
+				'Strategic: ' + d.strategic + '\n' +
+				'Execution: ' + d.execution + '\n' +
+				'Influence: ' + d.influence + '\n' +
+				'Relationship: ' + d.relationship));
 
 		let legendOrdinal = d3.legendColor()
 			.scale(scaleColor)
@@ -357,13 +506,13 @@
 		let legend = svg.append('g')
 			.classed('legend-color', true)
 			.attr('text-anchor', 'start')
-			.attr('transform','translate(20,30)')
-			.style('font-size','12px')
+			.attr('transform', 'translate(20,30)')
+			.style('font-size', '12px')
 			.call(legendOrdinal);
 
 		let sizeScale = d3.scaleOrdinal()
-  			.domain(['less', 'more'])
-  			.range([5, 10] );
+			.domain(['less', 'more'])
+			.range([5, 10]);
 
 		let legendSize = d3.legendSize()
 			.scale(sizeScale)
@@ -394,8 +543,8 @@
 			.attr('y', -350 * 0.5 * 0.8)
 			.attr('height', 350 * 0.8)
 			.attr('width', 350 * 0.8)
-				.append('xhtml:div')
-				.classed('circle-overlay__inner', true);
+			.append('xhtml:div')
+			.classed('circle-overlay__inner', true);
 
 		infoBox.append('h2')
 			.classed('circle-overlay__title', true)
@@ -403,15 +552,15 @@
 
 		infoBox.append('p')
 			.classed('circle-overlay__body', true)
-			.html(d => 'Strategic: ' + d.strategic + '<br/>'
-								+ 'Execution: ' + d.execution + '<br/>'
-								+ 'Influence: ' + d.influence + '<br/>'
-								+ 'Relationship: ' + d.relationship);
+			.html(d => 'Strategic: ' + d.strategic + '<br/>' +
+				'Execution: ' + d.execution + '<br/>' +
+				'Influence: ' + d.influence + '<br/>' +
+				'Relationship: ' + d.relationship);
 
 
 		node.on('click', (currentNode) => {
 			d3.event.stopPropagation();
-//			console.log('currentNode', currentNode);
+			//			console.log('currentNode', currentNode);
 			let currentTarget = d3.event.currentTarget; // the <g> el
 
 			if (currentNode === focusedNode) {
@@ -434,17 +583,17 @@
 			if (lastNode) {
 				lastNode.fx = null;
 				lastNode.fy = null;
-			/* 	node.filter((d, i) => i === lastNode.index)
-					.transition().duration(2000).ease(d3.easePolyOut)
-					.tween('circleOut', () => {
-						let irl = d3.interpolateNumber(lastNode.r, lastNode.radius);
-						return (t) => {
-							lastNode.r = irl(t);
-						}
-					})
-					.on('interrupt', () => {
-						lastNode.r = lastNode.radius;
-					}); */
+				/* 	node.filter((d, i) => i === lastNode.index)
+						.transition().duration(2000).ease(d3.easePolyOut)
+						.tween('circleOut', () => {
+							let irl = d3.interpolateNumber(lastNode.r, lastNode.radius);
+							return (t) => {
+								lastNode.r = irl(t);
+							}
+						})
+						.on('interrupt', () => {
+							lastNode.r = lastNode.radius;
+						}); */
 			}
 
 			// if (!d3.event.active) simulation.alphaTarget(0.5).restart();
@@ -482,37 +631,39 @@
 		});
 
 		function setValues(data, focusedNode) {
-			console.log('New Cat',focusedNode.cat);
-	
+			console.log('New Cat', focusedNode.cat);
+
 			// for each person, set value = value of focusedNode's cat + 50
 			node.append('circle')
 				.attr('id', d => d.cat + '.' + d.name)
 				.attr('r', 0)
 				.style('fill', d => scaleColor(d.cat))
 				.transition().duration(2000).ease(d3.easeElasticOut)
-					.tween('circleIn', (d) => {
+				.tween('circleIn', (d) => {
 
-						var majorFactor = ((focusedNode.cat == d.cat) ? 1 : .7);
-						var majorVariance = Math.floor(diff(d[focusedNode.cat], focusedNode.value) / majorFactor);
-						var oVar = ((focusedNode.cat == 'strategic') ? 0 : diff(d.strategic, focusedNode.strategic));
-						oVar = oVar + ((focusedNode.cat == 'execution') ? 0 :	diff(d.execution, focusedNode.execution));
-						oVar = oVar + ((focusedNode.cat == 'influence') ? 0 :	diff(d.influence, focusedNode.influence));
-						oVar = oVar + ((focusedNode.cat == 'relationship') ? 0 :	diff(d.relationship, focusedNode.relationship));
-						console.log(d.name, 'st:', d.strategic, 'ex:', d.execution, 'in:', d.influence, 're:', d.relationship, 'major:', majorVariance, 'other:', oVar, 'radius:', 170 - (majorVariance + oVar));
+					var majorFactor = ((focusedNode.cat == d.cat) ? 1 : .7);
+					var majorVariance = Math.floor(diff(d[focusedNode.cat], focusedNode.value) / majorFactor);
+					var oVar = ((focusedNode.cat == 'strategic') ? 0 : diff(d.strategic, focusedNode.strategic));
+					oVar = oVar + ((focusedNode.cat == 'execution') ? 0 : diff(d.execution, focusedNode.execution));
+					oVar = oVar + ((focusedNode.cat == 'influence') ? 0 : diff(d.influence, focusedNode.influence));
+					oVar = oVar + ((focusedNode.cat == 'relationship') ? 0 : diff(d.relationship, focusedNode
+						.relationship));
+					console.log(d.name, 'st:', d.strategic, 'ex:', d.execution, 'in:', d.influence, 're:', d.relationship,
+						'major:', majorVariance, 'other:', oVar, 'radius:', 170 - (majorVariance + oVar));
 
-						var theRadius = ((d.name == focusedNode.name) ? 140 : 170 - (majorVariance + oVar));
-						theRadius = ((theRadius < 40) ? 40 : theRadius); 
-						let i = d3.interpolateNumber(0, theRadius);
-						return (t) => {
-							d.r = i(t);
-							simulation.force('collide', forceCollide);
-						}
-					})
+					var theRadius = ((d.name == focusedNode.name) ? 140 : 170 - (majorVariance + oVar));
+					theRadius = ((theRadius < 40) ? 40 : theRadius);
+					let i = d3.interpolateNumber(0, theRadius);
+					return (t) => {
+						d.r = i(t);
+						simulation.force('collide', forceCollide);
+					}
+				})
 		}
 
-		function diff(a,b){
-			return Math.abs(a-b);
-		
+		function diff(a, b) {
+			return Math.abs(a - b);
+
 		}
 		// blur
 		d3.select(document).on('click', () => {
@@ -540,10 +691,10 @@
 					});
 
 				node.append('circle')
-				.attr('id', d => d.cat + '.' + d.name)
-				.attr('r', 0)
-				.style('fill', d => scaleColor(d.cat))
-				.transition().duration(2000).ease(d3.easeElasticOut)
+					.attr('id', d => d.cat + '.' + d.name)
+					.attr('r', 0)
+					.style('fill', d => scaleColor(d.cat))
+					.transition().duration(2000).ease(d3.easeElasticOut)
 					.tween('circleIn', (d) => {
 
 						let i = d3.interpolateNumber(0, d.value);
@@ -564,8 +715,9 @@
 			node
 				.attr('transform', d => `translate(${d.x},${d.y})`)
 				.select('circle')
-					.attr('r', d => d.r);
+				.attr('r', d => d.r);
 		}
 	</script>
 </body>
+
 </html>
