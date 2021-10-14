@@ -1,0 +1,92 @@
+<html>
+
+<body>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <div id="sankey_multiple" style="width: 900px; height: 300px;"></div>
+
+    <script type="text/javascript">
+        google.charts.load("current", {
+            packages: ["sankey"]
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'From');
+            data.addColumn('string', 'To');
+            data.addColumn('number', 'Number (millions)');
+            data.addRows([
+            ['Online Banking', 'Church', 17],
+            ['Offline Only', 'Church', 5],
+            ['Online Banking', 'School', 10],
+            ['Offline Only', 'School', 2],
+            ['Online Banking', 'Direct Services', 4],
+            ['Offline Only', 'Direct Services', 1],
+            ['Online Banking', 'Legacy Referral', 5],
+            ['Offline Only', 'Legacy Referral', .5],
+            ['Online Banking', 'Business Campaign 1', 2],
+            ['Offline Only', 'Business Campaign 1', .5],
+            ['Online Banking', 'Business Campaign 2', 1],
+            ['Offline Only', 'Business Campaign 2', .5],
+            ['Online Banking', 'Other', 1],
+            ['Offline Only', 'Other', 5],
+
+                ['Church', 'Direct Deposit', 16],
+                ['Church', 'Manual Deposit', 4],
+                ['Church', 'Transfer Only', 2],
+                ['School', 'Direct Deposit', 9],
+                ['School', 'Manual Deposit', 2.8],
+                ['School', 'Transfer Only', .2],
+                ['Direct Services', 'Direct Deposit', 3],
+                ['Direct Services', 'Manual Deposit', 1],
+                ['Direct Services', 'Transfer Only', 1],
+                ['Legacy Referral', 'Direct Deposit', .1],
+                ['Legacy Referral', 'Manual Deposit', 5.1],
+                ['Legacy Referral', 'Transfer Only', .1],
+                ['Business Campaign 1', 'Direct Deposit', 1.3],
+                ['Business Campaign 1', 'Manual Deposit', 1.3],
+                ['Business Campaign 1', 'Transfer Only', .2],
+                ['Business Campaign 2', 'Direct Deposit', .3],
+                ['Business Campaign 2', 'Manual Deposit', 1.05],
+                ['Business Campaign 2', 'Transfer Only', .45],
+                ['Other', 'Direct Deposit', .5],
+                ['Other', 'Manual Deposit', 3.05],
+                ['Other', 'Transfer Only', 2.45],
+
+                ['Direct Deposit', 'Current Customers', 26],
+                ['Direct Deposit', 'Hospitality', 1],
+                ['Direct Deposit', 'Outbound Churn', 3],
+                ['Direct Deposit', 'Food Service', 1.2],
+                ['Manual Deposit', 'Current Customers', 3.25],
+                ['Manual Deposit', 'Transportation', 1],
+                ['Manual Deposit', 'Hospitality', 9],
+                ['Manual Deposit', 'Outbound Churn', 4],
+                ['Manual Deposit', 'Food Service', 7],
+                ['Food Service', 'Current Customers', 5],
+                ['Food Service', 'Current Customers', 1],
+                ['Food Service', 'Outbound Churn', 3],
+                ['Transportation', 'Current Customers', 5],
+                ['Transportation', 'Current Customers', 1],
+                ['Transportation', 'Outbound Churn', 3],
+                ['Hospitality', 'Current Customers', 5],
+                ['Hospitality', 'Current Customers', 1],
+                ['Hospitality', 'Outbound Churn', 3],
+                ['Transfer Only', 'Current Customers', 5.45],
+                ['Transfer Only', 'Food Service', .9],
+                ['Transfer Only', 'Outbound Churn', .05],
+            ]);
+
+            // Set chart options
+            var options = {
+                width: 1000,
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+
+</html>
