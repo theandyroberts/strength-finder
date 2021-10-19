@@ -321,18 +321,6 @@
 			relationship: 110,
 			icon: 'img/Randy.jpg'
 		}];
-
-		/*
-		, {
-			cat: 'strategic', name: 'Carly', value: 100,
-			strategic: 100, execution: 0, influence: 0, relationship: 50,
-			icon: 'Carly'
-		}, {
-			cat: 'influence', name: 'Tyler', value: 70,
-			strategic: 50, execution: 30, influence: 70, relationship: 0,
-			icon: 'Tyler'
-		}
-		*/
 	</script>
 
 	<script>
@@ -488,19 +476,6 @@
 			.attr('y', (d, i, nodes) => (13 + (i - nodes.length / 2 - 0.5) * 10))
 			.text(name => name);
 
-		// display image as circle icon
-		/* node.filter(d => String(d.icon).includes('img/'))
-			.append('image')
-			.classed('node-icon', true)
-			.attr('clip-path', d => `url(#clip-${d.id})`)
-			.attr('xlink:href', d => d.icon)
-			.attr('x', d => - d.radius * 2 )
-			.attr('y', d => - d.radius * 2 )
-			.attr('height', d => d.radius * 4 ) // d => d.radius * 2 * 0.7
-			.attr('width', d => d.radius * 4 ) //  d => d.radius * 2 * 0.7
-			.attr("patternContentUnits", "objectBoundingBox")
-			.attr("opacity", 0.5 ) */
-
 		node.append('title')
 			.text(d => (d.name + ' - ' + d.cat + '\n' +
 				'Strategic: ' + d.strategic + '\n' +
@@ -536,15 +511,6 @@
 			.style('font-size', '12px')
 			.call(legendSize);
 
-
-		/*
-		<foreignObject class="circle-overlay" x="10" y="10" width="100" height="150">
-			<div class="circle-overlay__inner">
-				<h2 class="circle-overlay__title">ReactJS</h2>
-				<p class="circle-overlay__body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam, sunt, aspernatur. Autem repudiandae, laboriosam. Nulla quidem nihil aperiam dolorem repellendus pariatur, quaerat sed eligendi inventore ipsa natus fugiat soluta doloremque!</p>
-			</div>
-		</foreignObject>
-		*/
 		let infoBox = node.append('foreignObject')
 			.classed('circle-overlay hidden', true)
 			.attr('background', 'white')
@@ -569,7 +535,6 @@
 
 		node.on('click', (currentNode) => {
 			d3.event.stopPropagation();
-			//			console.log('currentNode', currentNode);
 			let currentTarget = d3.event.currentTarget; // the <g> el
 
 			if (currentNode === focusedNode) {
@@ -592,20 +557,7 @@
 			if (lastNode) {
 				lastNode.fx = null;
 				lastNode.fy = null;
-				/* 	node.filter((d, i) => i === lastNode.index)
-						.transition().duration(2000).ease(d3.easePolyOut)
-						.tween('circleOut', () => {
-							let irl = d3.interpolateNumber(lastNode.r, lastNode.radius);
-							return (t) => {
-								lastNode.r = irl(t);
-							}
-						})
-						.on('interrupt', () => {
-							lastNode.r = lastNode.radius;
-						}); */
 			}
-
-			// if (!d3.event.active) simulation.alphaTarget(0.5).restart();
 
 			d3.transition().duration(2000).ease(d3.easePolyOut)
 				.tween('moveIn', () => {
